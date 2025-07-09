@@ -8,12 +8,13 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 class FGuardService : BaseBlockingService() {
 
     private val coroutineScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
-    private val workSemaphore = Semaphore(2)
+    private val mutex = Mutex()
     private var lastEventTimeStamp = 0L
 
     private val monitoredApps = hashSetOf(
@@ -44,28 +45,20 @@ class FGuardService : BaseBlockingService() {
 
     private fun handleMonitoredAppEvent() {
         if (!isDelayOver(lastEventTimeStamp, 2000)) return
-        if (!workSemaphore.tryAcquire()) return
 
         coroutineScope.launch {
-            try {
+            mutex.withLock {
                 performGlobalAction(GLOBAL_ACTION_BACK)
-            } finally {
-                workSemaphore.release()
+                lastEventTimeStamp = SystemClock.uptimeMillis()
             }
         }
-
-        lastEventTimeStamp = SystemClock.uptimeMillis()
     }
 
     private fun handleBlockedClickEvent() {
-        if (!workSemaphore.tryAcquire()) return
-
         coroutineScope.launch {
-            try {
+            mutex.withLock {
                 delay(200)
                 performGlobalAction(GLOBAL_ACTION_BACK)
-            } finally {
-                workSemaphore.release()
             }
         }
     }
