@@ -17,6 +17,21 @@
   - A view with contentDescription `"Facebook App"` is clicked (used by Messenger's WebView shortcut).
 - Triggers a back action to instantly close the Facebook view.
 
+<table>
+  <tr>
+    <td>Without Facebook App</td>
+    <td>With Facebook App</td>
+  </tr>
+  <tr>
+    <td>
+      <video src="https://github.com/user-attachments/assets/b423bca8-2cd7-476e-a5b3-89931749afb1"></video>
+    </td>
+    <td>
+      <video src="https://github.com/user-attachments/assets/9305d94e-eef0-439b-980b-3f93f4db7d13"></video>
+    </td>
+  </tr>
+</table>
+
 ## 🛠️ Setup & Usage
 
 1. **Install the app on your device.**
